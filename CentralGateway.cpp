@@ -24,7 +24,6 @@
 #define SerialAT Serial1
 #define IP5306_ADDR 0x75
 #define IP5306_REG_SYS_CTL0 0x00
-#define SEALEVELPRESSURE_HPA (1013.25)
 #define uSToSecondsFacotr 1000000UL  
 #define PhoneNumber "+48796794794"
 
@@ -53,7 +52,7 @@ String apiKeyValue = "tPmAT5Ab3j7F9";
 const int port = 80;
 const char *currentTime = "/get-current-time.php";
 const char *postWeightSensorData = "/post-weight-data.php"; 
-const char *postGatewaySensorData = "/post-esp-data.php"; 
+const char *postGatewaySensorData = "/post-gateway-data.php"; 
 
 const char *clientWeightServer = "http://192.168.4.1/weight";
 const char *clientTemperatureServer = "http://192.168.4.1/temperature";
@@ -271,6 +270,8 @@ void PutAllScalesToSleeAndPutYourselfToSleep(String *httpRequestData)
 {
 	String fullTime = GetCurrentTime();
 
+	DisconnectMobileInternet();
+
 	int minutes = 60 - fullTime.substring(3, 4).toInt();
 	int seconds = 60  - fullTime.substring(5, 7).toInt();
 
@@ -308,6 +309,7 @@ void SendDeepSleepCommandToClient(const char * weightSsid, long long sleepTime)
 
 	Serial.print("ANSWER POST content: ");
 	Serial.println(content);
+	DisconnectWiFi();
 }
 
 String GetCurrentTime()
